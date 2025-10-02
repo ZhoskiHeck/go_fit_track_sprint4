@@ -31,7 +31,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 	// 3) Преобразовываем первый элемент слайса (количество шагов) в int, с обработкой на ошибки
 	steps, err := strconv.Atoi(packagePart[0])
 	if err != nil {
-		return 0, 0, fmt.Errorf("Некорректно указано количество шагов", err)
+		return 0, 0, fmt.Errorf("Некорректно указано количество шагов: %v", err)
 	}
 
 	// 4) Проверка количества шагов на положительное число
@@ -42,7 +42,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 	// 5) Преобразовываем второй элемент слайса (время) в time.Duration с обработкой ошибок
 	duration, err := time.ParseDuration(packagePart[1])
 	if err != nil {
-		return 0, 0, fmt.Errorf("Некорректно указана продолжительность", err)
+		return 0, 0, fmt.Errorf("Некорректно указана продолжительность: %v", err)
 	}
 
 	// 6) Возврат значений и nil(для ошибки)
