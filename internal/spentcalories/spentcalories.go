@@ -172,7 +172,7 @@ func WalkingSpentCalories(steps int, weight, height float64, duration time.Durat
 	// 2) Рассчитываем среднюю скорость
 	speed := meanSpeed(steps, height, duration)
 	if speed == 0 {
-		return 0, nil
+		return 0, errors.New("средняя скорость равна 0")
 	}
 
 	// 3) Рассчитываем количество калорий

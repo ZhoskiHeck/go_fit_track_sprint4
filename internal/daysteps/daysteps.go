@@ -55,14 +55,12 @@ func DayActionInfo(data string, weight, height float64) string {
 	// 1) Получаем данные о количестве шагов и продолжительности, с учетом ошибок
 	steps, duration, err := parsePackage(data)
 	if err != nil {
-		fmt.Println("Ошибка получения данных: ", err)
-		return ""
+		return fmt.Sprintf("Ошибка получения данных: %v", err)
 	}
 
 	// 2) Проверяем чтобы количество шагов было больше 0
 	if steps <= 0 {
-		fmt.Println("Количество шагов должно быть больше 0")
-		return ""
+		return "Количество шагов должно быть больше 0"
 	}
 
 	// 3) Вычисляем дистанцию в метрах
@@ -73,6 +71,9 @@ func DayActionInfo(data string, weight, height float64) string {
 
 	// 5) Вычисляем количество потраченных калорий
 	calories, err := spentcalories.WalkingSpentCalories(steps, weight, height, duration)
+	if err != nil {
+		return fmt.Sprintf("Ошибка расчета калорий: %v", err)
+	}
 
 	// 6) Сформировываем строку для возврата
 	result := fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n", steps, distanceKm, calories)
