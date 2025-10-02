@@ -42,7 +42,7 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 	}
 
 	// 5) Определить вид активности
-	activityType := packagePart[2]
+	activityType := packagePart[1]
 
 	// 6) Возврат значений
 	return steps, activityType, duration, nil

@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/Yandex-Practicum/tracker/internal/spentcalories"
 )
 
 const (
@@ -18,7 +20,7 @@ const (
 func parsePackage(data string) (int, time.Duration, error) {
 	// Реализация 1 функции
 
-	// 1) Разделяем строки на слайс строк через запятую
+	// 1) Разделяем строку на слайс строк через запятую
 	packagePart := strings.Split(data, ",")
 
 	// 2) Проверяем длину слайса (должна равняться 2)
@@ -48,5 +50,32 @@ func parsePackage(data string) (int, time.Duration, error) {
 }
 
 func DayActionInfo(data string, weight, height float64) string {
-	// TODO: реализовать функцию
+	// Реализация 2 функции
+
+	// 1) Получаем данные о количестве шагов и продолжительности, с учетом ошибок
+	steps, duration, err := parsePackage(data)
+	if err != nil {
+		fmt.Println("Ошибка получения данных: ", err)
+		return ""
+	}
+
+	// 2) Проверяем чтобы количество шагов было больше 0
+	if steps <= 0 {
+		fmt.Println("Количество шагов должно быть больше 0")
+		return ""
+	}
+
+	// 3) Вычисляем дистанцию в метрах
+	distanceMeters := float64(steps) * stepLength
+
+	// 4) Переводим дистанцию в километры
+	distanceKm := distanceMeters / mInKm
+
+	// 5) Вычисляем количество потраченных калорий
+	calories, err := spentcalories.WalkingSpentCalories(steps, weight, height, duration)
+
+	// 6) Сформировываем строку для возврата
+	result := fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.", steps, distanceKm, calories)
+
+	return result
 }
