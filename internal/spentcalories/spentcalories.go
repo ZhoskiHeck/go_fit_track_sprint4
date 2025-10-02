@@ -32,13 +32,13 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 	// 3) Преобразовываем первый элемент слайса (количество шагов) в int
 	steps, err := strconv.Atoi(packagePart[0])
 	if err != nil {
-		return 0, "", 0, fmt.Errorf("Некорректно указано количество шагов", err)
+		return 0, "", 0, fmt.Errorf("Некорректно указано количество шагов: %v", err)
 	}
 
 	// 4) Преобразовываем третий элемент слайса в time.Duration
 	duration, err := time.ParseDuration(packagePart[2])
 	if err != nil {
-		return 0, "", 0, fmt.Errorf("Некорректно указана продолжительность", err)
+		return 0, "", 0, fmt.Errorf("Некорректно указана продолжительность: %v", err)
 	}
 
 	// 5) Определить вид активности
