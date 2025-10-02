@@ -30,8 +30,8 @@ func parsePackage(data string) (int, time.Duration, error) {
 	}
 
 	// 3) Преобразовываем первый элемент слайса (количество шагов) в int, с обработкой на ошибки
-	stepsStr := strings.TrimSpace(packagePart[0])
-	if stepsStr == "" {
+	stepsStr := packagePart[0]
+	if strings.ContainsAny(stepsStr, " \t\n\r") {
 		return 0, 0, errors.New("некорректно указано количество шагов")
 	}
 
@@ -40,7 +40,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 		stepsStr = strings.TrimPrefix(stepsStr, "+")
 	}
 
-	if strings.TrimSpace(stepsStr) == "" {
+	if stepsStr == "" {
 		return 0, 0, errors.New("некорректно указано количество шагов")
 	}
 
@@ -55,15 +55,23 @@ func parsePackage(data string) (int, time.Duration, error) {
 	}
 
 	// 5) Преобразовываем второй элемент слайса (время) в time.Duration с обработкой ошибок
-	durationStr := strings.TrimSpace(packagePart[1])
+	durationStr := packagePart[1]
+	if strings.ContainsAny(durationStr, " \t\n\r") {
+		return 0, 0, errors.New("некорректно указана продолжительность")
+	}
+
+	if durationStr == "" {
+		return 0, 0, errors.New("некорректно указана продолжительность")
+	}
+
 	duration, err := time.ParseDuration(durationStr)
 	if err != nil {
 		return 0, 0, fmt.Errorf("некорректно указана продолжительность: %v", err)
 	}
+
 	if duration <= 0 {
 		return 0, 0, errors.New("продолжительность должна быть больше 0")
 	}
-
 	// 6) Возврат значений и nil(для ошибки)
 	return steps, duration, nil
 }
