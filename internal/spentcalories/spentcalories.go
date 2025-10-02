@@ -26,19 +26,19 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 
 	// 2) Проверяем длину слайса (должна равняться 3)
 	if len(packagePart) != 3 {
-		return 0, "", 0, errors.New("Некорректные (неполные) данные")
+		return 0, "", 0, errors.New("некорректные (неполные) данные")
 	}
 
 	// 3) Преобразовываем первый элемент слайса (количество шагов) в int
 	steps, err := strconv.Atoi(packagePart[0])
 	if err != nil {
-		return 0, "", 0, fmt.Errorf("Некорректно указано количество шагов: %v", err)
+		return 0, "", 0, fmt.Errorf("некорректно указано количество шагов: %v", err)
 	}
 
 	// 4) Преобразовываем третий элемент слайса в time.Duration
 	duration, err := time.ParseDuration(packagePart[2])
 	if err != nil {
-		return 0, "", 0, fmt.Errorf("Некорректно указана продолжительность: %v", err)
+		return 0, "", 0, fmt.Errorf("некорректно указана продолжительность: %v", err)
 	}
 
 	// 5) Определить вид активности
@@ -113,7 +113,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 	speed := meanSpeed(steps, height, duration)
 
 	// 4) Сформировываем строку с информацией о тренировке
-	info := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f",
+	info := fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",
 		activityType,
 		duration.Hours(),
 		dist,
@@ -127,16 +127,16 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 
 	// 1) Проверка входных параметров на корректность
 	if steps <= 0 {
-		return 0, errors.New("Количество шагов должно быть больше 0")
+		return 0, errors.New("количество шагов должно быть больше 0")
 	}
 	if weight <= 0 {
-		return 0, errors.New("Вес должен быть больше 0")
+		return 0, errors.New("вес должен быть больше 0")
 	}
 	if height <= 0 {
-		return 0, errors.New("Рост должен быть больше 0")
+		return 0, errors.New("рост должен быть больше 0")
 	}
 	if duration <= 0 {
-		return 0, errors.New("Продолжительность должна быть больше 0")
+		return 0, errors.New("продолжительность должна быть больше 0")
 	}
 
 	// 2) Рассчитываем среднюю скорость
@@ -158,16 +158,16 @@ func WalkingSpentCalories(steps int, weight, height float64, duration time.Durat
 
 	// 1) Проверка входных параметров на корректность
 	if steps <= 0 {
-		return 0, errors.New("Количество шагов должно быть больше 0")
+		return 0, errors.New("количество шагов должно быть больше 0")
 	}
 	if weight <= 0 {
-		return 0, errors.New("Вес должен быть больше 0")
+		return 0, errors.New("вес должен быть больше 0")
 	}
 	if height <= 0 {
-		return 0, errors.New("Рост должен быть больше 0")
+		return 0, errors.New("рост должен быть больше 0")
 	}
 	if duration <= 0 {
-		return 0, errors.New("Продолжительность должна быть больше 0")
+		return 0, errors.New("продолжительность должна быть больше 0")
 	}
 
 	// 2) Рассчитываем среднюю скорость
