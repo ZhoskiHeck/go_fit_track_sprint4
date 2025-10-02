@@ -3,6 +3,7 @@ package daysteps
 import (
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -30,11 +31,20 @@ func parsePackage(data string) (int, time.Duration, error) {
 
 	// 3) Преобразовываем первый элемент слайса (количество шагов) в int, с обработкой на ошибки
 	stepsStr := strings.TrimSpace(packagePart[0])
+	if stepsStr == "" {
+		return 0, 0, errors.New("некорректно указано количество шагов")
+	}
+
+	// Обработка знака "+"
 	if strings.HasPrefix(stepsStr, "+") {
 		stepsStr = strings.TrimPrefix(stepsStr, "+")
 	}
 
-	steps, err := strconv.Atoi(stepsStr) // ← использовать stepsStr вместо packagePart[0]
+	if strings.TrimSpace(stepsStr) == "" {
+		return 0, 0, errors.New("некорректно указано количество шагов")
+	}
+
+	steps, err := strconv.Atoi(stepsStr)
 	if err != nil {
 		return 0, 0, fmt.Errorf("некорректно указано количество шагов: %v", err)
 	}
@@ -64,13 +74,9 @@ func DayActionInfo(data string, weight, height float64) string {
 	// 1) Получаем данные о количестве шагов и продолжительности, с учетом ошибок
 	steps, duration, err := parsePackage(data)
 	if err != nil {
+		log.Println("Ошибка получения данных:", err)
 		return ""
 	}
-
-	// 2) Проверяем чтобы количество шагов было больше 0
-	//if steps <= 0 {
-	//	return "Количество шагов должно быть больше 0"
-	//}
 
 	// 3) Вычисляем дистанцию в метрах
 	distanceMeters := float64(steps) * stepLength
@@ -81,6 +87,7 @@ func DayActionInfo(data string, weight, height float64) string {
 	// 5) Вычисляем количество потраченных калорий
 	calories, err := spentcalories.WalkingSpentCalories(steps, weight, height, duration)
 	if err != nil {
+		log.Println("Ошибка расчета калорий:", err)
 		return ""
 	}
 
