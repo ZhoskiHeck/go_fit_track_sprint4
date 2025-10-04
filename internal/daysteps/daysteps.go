@@ -36,8 +36,8 @@ func parsePackage(data string) (int, time.Duration, error) {
 	}
 
 	// Обработка знака "+"
-	if strings.HasPrefix(stepsStr, "+") {
-		stepsStr = strings.TrimPrefix(stepsStr, "+")
+	if after, ok := strings.CutPrefix(stepsStr, "+"); ok {
+		stepsStr = after
 	}
 
 	if stepsStr == "" {

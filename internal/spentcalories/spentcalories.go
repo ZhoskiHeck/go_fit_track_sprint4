@@ -30,24 +30,34 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 
 	// 3) Преобразовываем первый элемент слайса (количество шагов) в int
 	stepsStr := strings.TrimSpace(packagePart[0])
-	if strings.HasPrefix(stepsStr, "+") {
-		stepsStr = strings.TrimPrefix(stepsStr, "+")
+	if stepsStr == "" {
+		return 0, "", 0, errors.New("некорректно указано количество шагов")
 	}
 
-	steps, err := strconv.Atoi(stepsStr) // ← использовать stepsStr вместо packagePart[0]
+	if after, ok := strings.CutPrefix(stepsStr, "+"); ok {
+		stepsStr = after
+	}
+
+	steps, err := strconv.Atoi(stepsStr)
 	if err != nil {
 		return 0, "", 0, fmt.Errorf("некорректно указано количество шагов: %v", err)
 	}
+
 	if steps <= 0 {
 		return 0, "", 0, errors.New("количество шагов должно быть больше 0")
 	}
 
 	// 4) Преобразовываем третий элемент слайса в time.Duration
 	durationStr := strings.TrimSpace(packagePart[2])
+	if durationStr == "" {
+		return 0, "", 0, errors.New("некорректно указана продолжительность")
+	}
+
 	duration, err := time.ParseDuration(durationStr)
 	if err != nil {
 		return 0, "", 0, fmt.Errorf("некорректно указана продолжительность: %v", err)
 	}
+
 	if duration <= 0 {
 		return 0, "", 0, errors.New("продолжительность должна быть больше 0")
 	}
