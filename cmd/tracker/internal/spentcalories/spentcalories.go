@@ -20,7 +20,7 @@ const (
 func parseTraining(data string) (int, string, time.Duration, error) {
 	// Реализация 3 функции
 
-	// 1) Разделяем строку на слайс строк
+	// 1) Разделяем строку на слайс строк по запятым
 	packagePart := strings.Split(data, ",")
 
 	// 2) Проверяем длину слайса (должна равняться 3)
@@ -29,20 +29,23 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 	}
 
 	// 3) Преобразовываем первый элемент слайса (количество шагов) в int
-	stepsStr := strings.TrimSpace(packagePart[0])
+	stepsStr := strings.TrimSpace(packagePart[0]) // удаляем пробелы по краям
 	if stepsStr == "" {
 		return 0, "", 0, errors.New("некорректно указано количество шагов")
 	}
 
+	// обработка знака "+" и его удаление
 	if after, ok := strings.CutPrefix(stepsStr, "+"); ok {
 		stepsStr = after
 	}
 
+	// преобразуем строку в целое число
 	steps, err := strconv.Atoi(stepsStr)
 	if err != nil {
 		return 0, "", 0, fmt.Errorf("некорректно указано количество шагов: %v", err)
 	}
 
+	// проверяем что количество шагов больше 0
 	if steps <= 0 {
 		return 0, "", 0, errors.New("количество шагов должно быть больше 0")
 	}
@@ -53,11 +56,13 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 		return 0, "", 0, errors.New("некорректно указана продолжительность")
 	}
 
+	// забираем продолжительность используя time
 	duration, err := time.ParseDuration(durationStr)
 	if err != nil {
 		return 0, "", 0, fmt.Errorf("некорректно указана продолжительность: %v", err)
 	}
 
+	// проверяем что продолжительность больше 0
 	if duration <= 0 {
 		return 0, "", 0, errors.New("продолжительность должна быть больше 0")
 	}
@@ -92,7 +97,7 @@ func meanSpeed(steps int, height float64, duration time.Duration) float64 {
 		return 0
 	}
 
-	// 2) Вычисляем дистанцию
+	// 2) Вычисляем дистанцию через функцию distance()
 	dist := distance(steps, height)
 
 	// 3) Вычисляем среднюю скорость
@@ -119,6 +124,7 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 	var calories float64
 	var caloriesErr error
 
+	// приводим тип активности к нижнему регистру для унификации сравнения
 	switch strings.ToLower(activityType) {
 	case "ходьба", "walking":
 		calories, caloriesErr = WalkingSpentCalories(steps, weight, height, duration)
@@ -127,6 +133,8 @@ func TrainingInfo(data string, weight, height float64) (string, error) {
 	default:
 		return "", errors.New("неизвестный тип тренировки: " + activityType)
 	}
+
+	// проверяем ошибку расчета калорий
 	if caloriesErr != nil {
 		log.Println("Ошибка расчета калорий:", caloriesErr)
 		return "", caloriesErr
@@ -206,7 +214,6 @@ func WalkingSpentCalories(steps int, weight, height float64, duration time.Durat
 	baseCalories := (weight * speed * durationInMinutes) / minInH
 
 	// 4) Учитываем корректирующий коэффициент
-
 	calories := baseCalories * walkingCaloriesCoefficient
 
 	return calories, nil

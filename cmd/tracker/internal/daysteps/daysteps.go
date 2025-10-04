@@ -31,19 +31,23 @@ func parsePackage(data string) (int, time.Duration, error) {
 
 	// 3) Преобразовываем первый элемент слайса (количество шагов) в int, с обработкой на ошибки
 	stepsStr := packagePart[0]
+
+	// проверяем на наличие пробелов в строке
 	if strings.ContainsAny(stepsStr, " \t\n\r") {
 		return 0, 0, errors.New("некорректно указано количество шагов")
 	}
 
-	// Обработка знака "+"
+	// обработка знака "+" и его удаление
 	if after, ok := strings.CutPrefix(stepsStr, "+"); ok {
 		stepsStr = after
 	}
 
+	// проверяем строку на пустое значение после удаления
 	if stepsStr == "" {
 		return 0, 0, errors.New("некорректно указано количество шагов")
 	}
 
+	// преобразуем в целое число
 	steps, err := strconv.Atoi(stepsStr)
 	if err != nil {
 		return 0, 0, fmt.Errorf("некорректно указано количество шагов: %v", err)
@@ -56,19 +60,24 @@ func parsePackage(data string) (int, time.Duration, error) {
 
 	// 5) Преобразовываем второй элемент слайса (время) в time.Duration с обработкой ошибок
 	durationStr := packagePart[1]
+
+	// проверяем на наличие пробелов в строке с временем
 	if strings.ContainsAny(durationStr, " \t\n\r") {
 		return 0, 0, errors.New("некорректно указана продолжительность")
 	}
 
+	// проверяем что строка со временем не пустая
 	if durationStr == "" {
 		return 0, 0, errors.New("некорректно указана продолжительность")
 	}
 
+	// забираем продолжительность используя time
 	duration, err := time.ParseDuration(durationStr)
 	if err != nil {
 		return 0, 0, fmt.Errorf("некорректно указана продолжительность: %v", err)
 	}
 
+	// проверяем что продолжительность больше 0
 	if duration <= 0 {
 		return 0, 0, errors.New("продолжительность должна быть больше 0")
 	}
@@ -79,7 +88,7 @@ func parsePackage(data string) (int, time.Duration, error) {
 func DayActionInfo(data string, weight, height float64) string {
 	// Реализация 2 функции
 
-	// 1) Получаем данные о количестве шагов и продолжительности, с учетом ошибок
+	// 1) Получаем данные о количестве шагов и продолжительности, с возвратом пустой строки при ошибке
 	steps, duration, err := parsePackage(data)
 	if err != nil {
 		log.Println("Ошибка получения данных:", err)
@@ -99,7 +108,7 @@ func DayActionInfo(data string, weight, height float64) string {
 		return ""
 	}
 
-	// 6) Сформировываем строку для возврата
+	// 6) Сформировываем строку для возврата, с форматированием
 	result := fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.\n", steps, distanceKm, calories)
 
 	return result
